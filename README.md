@@ -259,6 +259,44 @@ After the first publish succeeds, configure npm trusted publishing for future re
 
 After that, future releases can be published from GitHub Actions without a long-lived npm token.
 
+### Release automation helpers
+
+This repository includes release scripts for bumping versions and tagging the current version.
+
+Version bump helpers use `npm version`, so they update `package.json` and `package-lock.json`, create a release commit, and create the matching git tag automatically.
+
+```bash
+npm run release:bump:patch
+npm run release:bump:minor
+npm run release:bump:major
+```
+
+Non-destructive previews are also available:
+
+```bash
+npm run release:bump:patch:dry-run
+npm run release:bump:minor:dry-run
+npm run release:bump:major:dry-run
+```
+
+If you already have the desired version committed and only need the matching tag, use:
+
+```bash
+npm run release:tag-current
+```
+
+That command is idempotent: if `v<current package.json version>` already exists, it does nothing. It also refuses to create a new tag from a dirty working tree, so you do not accidentally tag the wrong commit.
+
+Typical release flow after trusted publishing is configured:
+
+```bash
+npm run release:bump:patch
+git push
+git push --tags
+```
+
+Pushing the new `v*` tag triggers the GitHub Actions publish workflow.
+
 Trusted publishing references:
 
 - https://docs.npmjs.com/trusted-publishers
