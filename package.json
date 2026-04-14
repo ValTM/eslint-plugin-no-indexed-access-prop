@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-no-indexed-access-prop",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "ESLint and Oxlint plugin that forbids TypeScript indexed access property types.",
   "keywords": [
     "eslint",
