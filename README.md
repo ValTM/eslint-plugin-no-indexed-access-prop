@@ -221,11 +221,33 @@ Before publishing to npm, verify at least the following:
 3. `npm test` passes
 4. `npm pack --dry-run` contains only the intended artifacts
 
+### First publish from a personal npm account
+
+npm trusted publishing cannot be the first publish for a brand new package. The package must already exist on npm before a trusted publisher can be attached to it.
+
+This repository includes scripts that isolate the bootstrap publish from your global npm login by using a repo-local user config file, `.npmrc.publish`, via npm's `--userconfig` support.
+
+Bootstrap flow:
+
+```bash
+npm run publish:login
+npm run publish:whoami
+npm test
+npm run publish:bootstrap:dry-run
+npm run publish:bootstrap
+```
+
+What this does:
+
+- `publish:login` logs into the public npm registry using `./.npmrc.publish` instead of your global `~/.npmrc`
+- `publish:whoami` confirms the active npm identity from that local config
+- `publish:bootstrap` performs the one-time initial publish from your personal account
+
+The `.npmrc.publish` file is gitignored and can be deleted after the first publish if you do not want to keep the local credentials around.
+
 ### Trusted publishing with GitHub Actions
 
-This repository includes a publish workflow intended for npm trusted publishing via OIDC, so no long-lived npm token is required in CI.
-
-Manual npm setup is still required once per package:
+After the first publish succeeds, configure npm trusted publishing for future releases:
 
 1. Open the package settings on npmjs.com
 2. Open the `Trusted Publisher` section
@@ -235,8 +257,11 @@ Manual npm setup is still required once per package:
    - Repository: `eslint-plugin-no-indexed-access-prop`
    - Workflow filename: `publish.yml`
 
+After that, future releases can be published from GitHub Actions without a long-lived npm token.
+
 Trusted publishing references:
 
 - https://docs.npmjs.com/trusted-publishers
 - https://docs.npmjs.com/generating-provenance-statements
+- https://docs.npmjs.com/cli/v11/commands/npm-trust
 - https://docs.github.com/en/actions/tutorials/publish-packages/publish-nodejs-packages

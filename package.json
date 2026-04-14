@@ -39,6 +39,10 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "prepack": "npm run build",
+    "publish:login": "npm login --registry https://registry.npmjs.org --userconfig ./.npmrc.publish",
+    "publish:whoami": "npm --registry https://registry.npmjs.org --userconfig ./.npmrc.publish whoami",
+    "publish:bootstrap:dry-run": "npm --registry https://registry.npmjs.org --userconfig ./.npmrc.publish publish --dry-run",
+    "publish:bootstrap": "npm --registry https://registry.npmjs.org --userconfig ./.npmrc.publish publish",
     "test:unit": "node --test tests/no-indexed-access-prop.test.mjs",
     "test:oxlint": "node --test tests/oxlint-smoke.test.mjs",
     "test": "npm run build && npm run test:unit && npm run test:oxlint"
