@@ -1,0 +1,57 @@
+{
+  "name": "eslint-plugin-no-indexed-access-prop",
+  "version": "0.1.0",
+  "description": "ESLint and Oxlint plugin that forbids TypeScript indexed access property types.",
+  "keywords": [
+    "eslint",
+    "eslint-plugin",
+    "oxlint",
+    "typescript",
+    "indexed-access",
+    "typescript-eslint"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ValTM/eslint-plugin-no-indexed-access-prop.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ValTM/eslint-plugin-no-indexed-access-prop/issues"
+  },
+  "homepage": "https://github.com/ValTM/eslint-plugin-no-indexed-access-prop#readme",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./rules/no-indexed-access-prop": {
+      "types": "./dist/rules/no-indexed-access-prop.d.ts",
+      "import": "./dist/rules/no-indexed-access-prop.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepack": "npm run build",
+    "test:unit": "node --test tests/no-indexed-access-prop.test.mjs",
+    "test:oxlint": "node --test tests/oxlint-smoke.test.mjs",
+    "test": "npm run build && npm run test:unit && npm run test:oxlint"
+  },
+  "peerDependencies": {
+    "eslint": ">=9"
+  },
+  "devDependencies": {
+    "@typescript-eslint/parser": "^8.58.2",
+    "@typescript-eslint/rule-tester": "^8.58.2",
+    "@typescript-eslint/utils": "^8.58.2",
+    "eslint": "^10.2.0",
+    "oxlint": "^1.60.0",
+    "typescript": "^6.0.2"
+  }
+}

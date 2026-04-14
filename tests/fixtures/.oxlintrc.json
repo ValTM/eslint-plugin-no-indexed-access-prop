@@ -1,0 +1,11 @@
+{
+  "jsPlugins": [
+    {
+      "name": "no-indexed-access-prop",
+      "specifier": "../../dist/index.js"
+    }
+  ],
+  "rules": {
+    "no-indexed-access-prop/no-indexed-access-prop": "error"
+  }
+}
