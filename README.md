@@ -212,54 +212,7 @@ npm install
 npm test
 ```
 
-## Publishing notes
-
-Before publishing to npm, verify at least the following:
-
-1. `package.json` has the final package name and version
-2. any desired registry metadata such as `repository`, `bugs`, `homepage`, and `license` is set
-3. `npm test` passes
-4. `npm pack --dry-run` contains only the intended artifacts
-
-### First publish from a personal npm account
-
-npm trusted publishing cannot be the first publish for a brand new package. The package must already exist on npm before a trusted publisher can be attached to it.
-
-This repository includes scripts that isolate the bootstrap publish from your global npm login by using a repo-local user config file, `.npmrc.publish`, via npm's `--userconfig` support.
-
-Bootstrap flow:
-
-```bash
-npm run publish:login
-npm run publish:whoami
-npm test
-npm run publish:bootstrap:dry-run
-npm run publish:bootstrap
-```
-
-What this does:
-
-- `publish:login` logs into the public npm registry using `./.npmrc.publish` instead of your global `~/.npmrc`
-- `publish:whoami` confirms the active npm identity from that local config
-- `publish:bootstrap` performs the one-time initial publish from your personal account
-
-The `.npmrc.publish` file is gitignored and can be deleted after the first publish if you do not want to keep the local credentials around.
-
-### Trusted publishing with GitHub Actions
-
-After the first publish succeeds, configure npm trusted publishing for future releases:
-
-1. Open the package settings on npmjs.com
-2. Open the `Trusted Publisher` section
-3. Choose `GitHub Actions`
-4. Configure:
-   - Organization or user: `ValTM`
-   - Repository: `eslint-plugin-no-indexed-access-prop`
-   - Workflow filename: `publish.yml`
-
-After that, future releases can be published from GitHub Actions without a long-lived npm token.
-
-### Release automation helpers
+## Release automation helpers
 
 This repository includes release scripts for bumping versions and tagging the current version.
 
@@ -287,19 +240,9 @@ npm run release:tag-current
 
 That command is idempotent: if `v<current package.json version>` already exists, it does nothing. It also refuses to create a new tag from a dirty working tree, so you do not accidentally tag the wrong commit.
 
-Typical release flow after trusted publishing is configured:
+When you're ready to publish the release commit and tags, push them explicitly:
 
 ```bash
-npm run release:bump:patch
 git push
 git push --tags
 ```
-
-Pushing the new `v*` tag triggers the GitHub Actions publish workflow.
-
-Trusted publishing references:
-
-- https://docs.npmjs.com/trusted-publishers
-- https://docs.npmjs.com/generating-provenance-statements
-- https://docs.npmjs.com/cli/v11/commands/npm-trust
-- https://docs.github.com/en/actions/tutorials/publish-packages/publish-nodejs-packages
