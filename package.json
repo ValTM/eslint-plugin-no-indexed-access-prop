@@ -18,6 +18,7 @@
     "url": "https://github.com/ValTM/eslint-plugin-no-indexed-access-prop/issues"
   },
   "homepage": "https://github.com/ValTM/eslint-plugin-no-indexed-access-prop#readme",
+  "license": "MIT",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.js",
