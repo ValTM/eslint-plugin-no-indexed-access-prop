@@ -214,7 +214,7 @@ npm test
 
 ## Release automation helpers
 
-This repository includes release scripts for bumping versions and tagging the current version.
+This repository includes release scripts for bumping versions, tagging the current version, and creating a GitHub Release for the current version tag.
 
 Version bump helpers use `npm version`, so they update `package.json` and `package-lock.json`, create a release commit, and create the matching git tag automatically.
 
@@ -240,9 +240,24 @@ npm run release:tag-current
 
 That command is idempotent: if `v<current package.json version>` already exists, it does nothing. It also refuses to create a new tag from a dirty working tree, so you do not accidentally tag the wrong commit.
 
-When you're ready to publish the release commit and tags, push them explicitly:
+To create a GitHub Release for the current version tag with generated notes, use:
+
+```bash
+npm run release:github-current
+```
+
+A dry-run preview is also available:
+
+```bash
+npm run release:github-current:dry-run
+```
+
+That command is also idempotent: if a GitHub Release for `v<current package.json version>` already exists, it does nothing. It requires the matching tag to already exist on `origin`.
+
+When you're ready to publish the release commit and tags, push them explicitly, then create the GitHub Release:
 
 ```bash
 git push
 git push --tags
+npm run release:github-current
 ```

@@ -42,6 +42,14 @@ function run(command, args, options = {}) {
   return result;
 }
 
+function tryRun(command, args) {
+  return spawnSync(command, args, {
+    cwd: repoRoot,
+    encoding: 'utf8',
+    stdio: 'pipe',
+  });
+}
+
 function gitStatus() {
   const result = run('git', ['status', '--short'], { captureOutput: true });
   return (result.stdout ?? '').trim();
@@ -50,6 +58,16 @@ function gitStatus() {
 function tagExists(tagName) {
   const result = run('git', ['tag', '--list', tagName], { captureOutput: true });
   return (result.stdout ?? '').trim() === tagName;
+}
+
+function remoteTagExists(tagName) {
+  const result = run('git', ['ls-remote', '--tags', 'origin', `refs/tags/${tagName}`], { captureOutput: true });
+  return (result.stdout ?? '').trim().length > 0;
+}
+
+function releaseExists(tagName) {
+  const result = tryRun('gh', ['release', 'view', tagName]);
+  return result.status === 0;
 }
 
 function getNextStableVersion(version, bump) {
@@ -126,6 +144,34 @@ function handleTagCurrent(args) {
   console.log(`Created annotated tag ${tagName}.`);
 }
 
+function handleGitHubCurrent(args) {
+  const dryRun = args.includes('--dry-run');
+  const version = readPackageVersion();
+  const tagName = `v${version}`;
+
+  if (releaseExists(tagName)) {
+    console.log(`GitHub Release ${tagName} already exists. Nothing to do.`);
+    return;
+  }
+
+  if (!remoteTagExists(tagName)) {
+    if (dryRun) {
+      console.log(`Would create GitHub Release ${tagName}, but tag ${tagName} has not been pushed to origin yet.`);
+      return;
+    }
+
+    fail(`Cannot create GitHub Release ${tagName} because the remote tag does not exist. Push tags first.`);
+  }
+
+  if (dryRun) {
+    console.log(`Would create GitHub Release ${tagName} with generated notes.`);
+    return;
+  }
+
+  run('gh', ['release', 'create', tagName, '--verify-tag', '--generate-notes']);
+  console.log(`Created GitHub Release ${tagName}.`);
+}
+
 const [command, ...args] = process.argv.slice(2);
 
 switch (command) {
@@ -135,6 +181,9 @@ switch (command) {
   case 'tag-current':
     handleTagCurrent(args);
     break;
+  case 'github-current':
+    handleGitHubCurrent(args);
+    break;
   default:
-    fail('Usage: node scripts/release.mjs <bump|tag-current> [args]');
+    fail('Usage: node scripts/release.mjs <bump|tag-current|github-current> [args]');
 }
