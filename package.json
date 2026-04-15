@@ -21,24 +21,27 @@
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
-  "main": "./dist/index.js",
+  "main": "./dist-cjs/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist-cjs/index.js"
     },
     "./rules/no-indexed-access-prop": {
       "types": "./dist/rules/no-indexed-access-prop.d.ts",
-      "import": "./dist/rules/no-indexed-access-prop.js"
+      "import": "./dist/rules/no-indexed-access-prop.js",
+      "require": "./dist-cjs/rules/no-indexed-access-prop.js"
     },
     "./package.json": "./package.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "dist-cjs"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "node scripts/build.mjs",
     "prepack": "npm run build",
     "publish:login": "npm login --registry https://registry.npmjs.org --userconfig ./.npmrc.publish",
     "publish:whoami": "npm --registry https://registry.npmjs.org --userconfig ./.npmrc.publish whoami",
@@ -54,12 +57,12 @@
     "release:tag-current:dry-run": "node scripts/release.mjs tag-current --dry-run",
     "release:github-current": "node scripts/release.mjs github-current",
     "release:github-current:dry-run": "node scripts/release.mjs github-current --dry-run",
-    "test:unit": "node --test tests/no-indexed-access-prop.test.mjs",
+    "test:unit": "node --test tests/no-indexed-access-prop.test.mjs tests/commonjs-interop.test.mjs",
     "test:oxlint": "node --test tests/oxlint-smoke.test.mjs",
     "test": "npm run build && npm run test:unit && npm run test:oxlint"
   },
   "peerDependencies": {
-    "eslint": ">=9"
+    "eslint": ">=8"
   },
   "devDependencies": {
     "@typescript-eslint/parser": "^8.58.2",
