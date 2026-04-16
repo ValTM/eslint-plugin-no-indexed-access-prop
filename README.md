@@ -2,6 +2,8 @@
 
 ESLint- and Oxlint-compatible rule for forbidding TypeScript indexed access types such as `User['id']` or `T[K]`.
 
+GPT-5.4, for reasons known only to its silicon soul, tends to get a little overexcited about indexed property access. This rule exists to curb that enthusiasm just enough to keep your types readable and your contracts honest.
+
 The package exports one rule:
 
 - `no-indexed-access-prop`
